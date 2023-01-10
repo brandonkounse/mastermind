@@ -1,7 +1,11 @@
 # frozen_string_literal: true
 
 require './mastermind'
+require './player'
 
 game = Mastermind.new
-p game.hidden_code
-game.guess_hidden_code
+p game.code_maker
+
+while game.current_turn < 12
+  game.play_mastermind
+end

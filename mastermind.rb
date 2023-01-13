@@ -13,9 +13,7 @@ class Mastermind
   end
 
   def play_mastermind
-    p pick_role
-    p guess_hidden_code
-    p @current_turn += 1
+    guess_hidden_code
   end
 
   def pick_role
@@ -25,6 +23,7 @@ class Mastermind
   end
 
   def guess_hidden_code
+    print 'Please make your guess: '
     guess = gets.chomp
     guess_hidden_code if validate_guess(guess)
   end
@@ -50,9 +49,10 @@ class Mastermind
 
   def validate_guess(guess)
     if guess.length != 4
+      puts 'Please enter 4 numbers!'
       true
-    else
-      guess.split('').any? { |num| p num.to_i < 1 || num.to_i > 6 } == true
+    elsif guess.split('').any? { |num| num.to_i < 1 || num.to_i > 6 } == true
+      puts 'Numbers have to be 1 through 6 only!'
     end
   end
 end

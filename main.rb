@@ -4,7 +4,7 @@ require './mastermind'
 require './player'
 
 game = Mastermind.new
-p game.code_maker
+game.pick_role
 
 while game.current_turn < 12
   game.play_mastermind

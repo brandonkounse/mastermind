@@ -25,7 +25,7 @@ class Mastermind
   def guess_hidden_code
     print 'Please make your guess: '
     guess = gets.chomp
-    guess_hidden_code if validate_guess(guess)
+    guess_hidden_code if invalid_guess?(guess)
   end
 
   private
@@ -47,7 +47,7 @@ class Mastermind
     end
   end
 
-  def validate_guess(guess)
+  def invalid_guess?(guess)
     if guess.length != 4
       puts 'Please enter 4 numbers!'
       true

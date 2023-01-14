@@ -2,15 +2,19 @@
 
 require 'colorize'
 require './player'
+require './instructions'
 
 # mastermind main class
 class Mastermind
+  include Instructions
+
   attr_reader :default_colors, :hidden_code, :code_breaker, :code_maker,
               :current_turn, :guess
 
   def initialize
     @default_colors = %w[white magenta red blue green yellow]
     @current_turn = 0
+    puts instructions
   end
 
   def play_mastermind

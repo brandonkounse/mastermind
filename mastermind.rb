@@ -5,7 +5,8 @@ require './player'
 
 # mastermind main class
 class Mastermind
-  attr_reader :default_colors, :hidden_code, :code_breaker, :code_maker, :current_turn
+  attr_reader :default_colors, :hidden_code, :code_breaker, :code_maker,
+              :current_turn, :guess
 
   def initialize
     @default_colors = %w[white magenta red blue green yellow]
@@ -15,6 +16,7 @@ class Mastermind
   def play_mastermind
     display_game_information
     guess_hidden_code
+    puts @guess
   end
 
   def pick_role
@@ -25,8 +27,8 @@ class Mastermind
 
   def guess_hidden_code
     print 'Please make your guess: '
-    guess = gets.chomp
-    guess_hidden_code if invalid_guess?(guess)
+    @guess = gets.chomp
+    guess_hidden_code if invalid_guess?(@guess)
   end
 
   def display_game_information
@@ -58,5 +60,9 @@ class Mastermind
     elsif guess.length != 4
       puts 'Guess must be exactly four numbers!'
     end
+  end
+
+  def next_turn
+    @current_turn += 1
   end
 end

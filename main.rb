@@ -6,6 +6,4 @@ require './player'
 game = Mastermind.new
 game.pick_role
 
-while game.current_turn < 12
-  game.play_mastermind
-end
+game.play_mastermind while game.current_turn < 12

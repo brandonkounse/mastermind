@@ -53,12 +53,10 @@ class Mastermind
   end
 
   def invalid_guess?(guess)
-    if guess.split('').any? { |alpha| ('a'..'z').cover?(alpha) }
-      puts 'Please enter only numbers!'
+    if guess.split('').any? { |input| !(1..6).cover?(input.to_i) }
+      puts 'Guess must be numbers 1 through 6 only!'
     elsif guess.length != 4
-      puts 'Please enter 4 numbers!'
-    elsif guess.split('').any? { |num| num.to_i < 1 || num.to_i > 6 } == true
-      puts 'Numbers have to be 1 through 6 only!'
+      puts 'Guess must be exactly four numbers!'
     end
   end
 end

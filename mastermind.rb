@@ -3,37 +3,40 @@
 require 'colorize'
 require './player'
 require './instructions'
+require 'pry-byebug'
 
 # mastermind main class
 class Mastermind
   include Instructions
 
-  attr_reader :default_colors, :hidden_code, :code_breaker, :code_maker,
+  attr_reader :default_colors, :hidden_code, :player, :computer,
               :current_turn, :guess
 
   def initialize
     @default_colors = ['white', 'magenta'.magenta, 'red'.red, 'blue'.blue, 'green'.green, 'yellow'.yellow]
+    @hidden_code = []
+    @guess = []
     @current_turn = 0
-    puts instructions
   end
 
   # Player interaction methods
   def game_start_setup
+    puts instructions
     pick_player_role
     set_computer_role
-    @code_breaker.name == 'player' ? player_set_hidden_code : computer_set_hidden_code
+    @player.role == 'codemaker' ? player_set_hidden_code : computer_set_hidden_code
   end
 
   def guess_hidden_code
     print 'Please make your guess: '
     @guess = gets.chomp
-    guess_hidden_code if invalid_selection?(@guess)
+    puts invalid_selection?(@guess) ? guess_hidden_code : next_turn
   end
 
   def play_mastermind
     display_game_information
-    computer_set_hidden_code
     guess_hidden_code
+    p examine_guess(@guess)
   end
 
   private
@@ -47,9 +50,9 @@ class Mastermind
   def validate_player_role(role)
     case role.to_i
     when 1
-      @code_maker = Player.new('maker', 'player')
+      @player = Player.new('codemaker')
     when 2
-      @code_breaker = Player.new('breaker', 'player')
+      @player = Player.new('codebreaker')
     else
       print 'Please enter either 1 for codemaker or 2 for codebreaker: '
       pick_player_role
@@ -57,11 +60,11 @@ class Mastermind
   end
 
   def set_computer_role
-    if @code_breaker.name == 'player'
-      @code_maker = Player.new('maker', 'computer')
-    else
-      @code_breaker = Player.new('breaker', 'computer')
-    end
+    @computer = if @player.role == 'codebreaker'
+                  Player.new('codemaker')
+                else
+                  Player.new('breaker')
+                end
   end
 
   def computer_set_hidden_code
@@ -70,26 +73,23 @@ class Mastermind
   end
 
   def player_set_hidden_code
-    puts 'Please select which 4 colors will be the hidden code: '
+    print 'Please select which 4 colors will be the hidden code: '
     player_code = gets.chomp
     player_set_hidden_code if invalid_selection?(player_code)
+    player_code.split('').each { |x| @hidden_code.push(@default_colors[x.to_i - 1]) }
   end
 
   def invalid_selection?(guess)
     if guess.split('').any? { |input| !(1..6).cover?(input.to_i) }
-      puts 'Entry must be numbers 1 through 6 only!'
+      puts "\nEntry must be numbers 1 through 6 only!\n\n"
+      true
     elsif guess.length != 4
-      puts 'Entry must be exactly four numbers!'
+      puts "\nEntry must be exactly four numbers!\n\n"
+      true
+    else
+      false
     end
   end
-
-  # def display_previous_guess(guess)
-  #   previous_guess = []
-  #   guess.split('').each do |color|
-  #     previous_guess.push(default_colors[color.to_i - 1])
-  #   end
-  #   previous_guess
-  # end
 
   def display_current_turn
     "Current Turn: #{@current_turn} of 12"
@@ -98,6 +98,7 @@ class Mastermind
   def display_game_information
     puts "\n"
     puts @default_colors.join(' | ')
+    puts @hidden_code.join(' | ')
     puts display_current_turn
   end
 

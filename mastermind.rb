@@ -18,16 +18,16 @@ class Mastermind
   end
 
   # Player interaction methods
-  def pick_player_role
-    print 'Do you want to be the codemaker (1) or codebreaker (2)?  '
-    role = gets.chomp
-    validate_player_role(role)
+  def game_start_setup
+    pick_player_role
+    set_computer_role
+    @code_breaker.name == 'player' ? player_set_hidden_code : computer_set_hidden_code
   end
 
   def guess_hidden_code
     print 'Please make your guess: '
     @guess = gets.chomp
-    guess_hidden_code if invalid_guess?(@guess)
+    guess_hidden_code if invalid_selection?(@guess)
   end
 
   def play_mastermind
@@ -37,6 +37,12 @@ class Mastermind
   end
 
   private
+
+  def pick_player_role
+    print 'Do you want to be the codemaker (1) or codebreaker (2)?  '
+    role = gets.chomp
+    validate_player_role(role)
+  end
 
   def validate_player_role(role)
     case role.to_i
@@ -50,16 +56,30 @@ class Mastermind
     end
   end
 
+  def set_computer_role
+    if @code_breaker.name == 'player'
+      @code_maker = Player.new('maker', 'computer')
+    else
+      @code_breaker = Player.new('breaker', 'computer')
+    end
+  end
+
   def computer_set_hidden_code
     @hidden_code = @default_colors.dup
     @hidden_code.delete_at(rand(@hidden_code.length)) while @hidden_code.length > 4
   end
 
-  def invalid_guess?(guess)
+  def player_set_hidden_code
+    puts 'Please select which 4 colors will be the hidden code: '
+    player_code = gets.chomp
+    player_set_hidden_code if invalid_selection?(player_code)
+  end
+
+  def invalid_selection?(guess)
     if guess.split('').any? { |input| !(1..6).cover?(input.to_i) }
-      puts 'Guess must be numbers 1 through 6 only!'
+      puts 'Entry must be numbers 1 through 6 only!'
     elsif guess.length != 4
-      puts 'Guess must be exactly four numbers!'
+      puts 'Entry must be exactly four numbers!'
     end
   end
 

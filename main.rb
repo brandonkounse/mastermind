@@ -5,5 +5,5 @@ require './player'
 
 game = Mastermind.new
 
-game.pick_player_role
+game.game_start_setup
 game.play_mastermind while game.current_turn < 12

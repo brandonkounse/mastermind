@@ -2,7 +2,7 @@
 
 # class for the codebreaker and codemaker
 class Player
-  attr_reader :name, :role
+  attr_reader :role
 
   def initialize(role)
     @role = role

@@ -12,15 +12,16 @@ class Mastermind
               :current_turn, :guess
 
   def initialize
-    @default_colors = %w[white magenta red blue green yellow]
+    @default_colors = ['white', 'magenta'.magenta, 'red'.red, 'blue'.blue, 'green'.green, 'yellow'.yellow]
     @current_turn = 0
     puts instructions
   end
 
-  def pick_role
-    puts 'Do you want to be the codemaker (1) or codebreaker (2) ?'
+  # Player interaction methods
+  def pick_player_role
+    print 'Do you want to be the codemaker (1) or codebreaker (2)?  '
     role = gets.chomp
-    validate_role(role)
+    validate_player_role(role)
   end
 
   def guess_hidden_code
@@ -29,23 +30,29 @@ class Mastermind
     guess_hidden_code if invalid_guess?(@guess)
   end
 
-  private
-
-  def set_hidden_code
-    @hidden_code = @default_colors.dup
-    @hidden_code.delete_at(rand(@hidden_code.length)) while @hidden_code.length > 4
+  def play_mastermind
+    display_game_information
+    computer_set_hidden_code
+    guess_hidden_code
   end
 
-  def validate_role(role)
+  private
+
+  def validate_player_role(role)
     case role.to_i
     when 1
-      @codemaker = Player.new('maker')
+      @code_maker = Player.new('maker', 'player')
     when 2
-      @code_maker = Player.new('breaker')
+      @code_breaker = Player.new('breaker', 'player')
     else
-      puts 'Please enter either 1 for codemaker or 2 for codebreaker: '
-      pick_role
+      print 'Please enter either 1 for codemaker or 2 for codebreaker: '
+      pick_player_role
     end
+  end
+
+  def computer_set_hidden_code
+    @hidden_code = @default_colors.dup
+    @hidden_code.delete_at(rand(@hidden_code.length)) while @hidden_code.length > 4
   end
 
   def invalid_guess?(guess)
@@ -56,17 +63,25 @@ class Mastermind
     end
   end
 
+  # def display_previous_guess(guess)
+  #   previous_guess = []
+  #   guess.split('').each do |color|
+  #     previous_guess.push(default_colors[color.to_i - 1])
+  #   end
+  #   previous_guess
+  # end
+
   def display_current_turn
-    puts "Current Turn: #{@current_turn} of 12"
+    "Current Turn: #{@current_turn} of 12"
+  end
+
+  def display_game_information
+    puts "\n"
+    puts @default_colors.join(' | ')
+    puts display_current_turn
   end
 
   def next_turn
     @current_turn += 1
-  end
-
-  def play_mastermind
-    display_current_turn
-    guess_hidden_code
-    puts @guess
   end
 end

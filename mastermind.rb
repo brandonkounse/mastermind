@@ -17,12 +17,6 @@ class Mastermind
     puts instructions
   end
 
-  def play_mastermind
-    display_game_information
-    guess_hidden_code
-    puts @guess
-  end
-
   def pick_role
     puts 'Do you want to be the codemaker (1) or codebreaker (2) ?'
     role = gets.chomp
@@ -33,10 +27,6 @@ class Mastermind
     print 'Please make your guess: '
     @guess = gets.chomp
     guess_hidden_code if invalid_guess?(@guess)
-  end
-
-  def display_game_information
-    puts "Current Turn: #{@current_turn} of 12"
   end
 
   private
@@ -66,7 +56,17 @@ class Mastermind
     end
   end
 
+  def display_current_turn
+    puts "Current Turn: #{@current_turn} of 12"
+  end
+
   def next_turn
     @current_turn += 1
+  end
+
+  def play_mastermind
+    display_current_turn
+    guess_hidden_code
+    puts @guess
   end
 end

@@ -13,7 +13,7 @@ class Mastermind
               :current_turn, :guess
 
   def initialize
-    @default_colors = ['white', 'magenta'.magenta, 'red'.red, 'blue'.blue, 'green'.green, 'yellow'.yellow]
+    @default_colors = %w[white magenta red blue green yellow]
     @hidden_code = []
     @current_turn = 0
   end
@@ -28,13 +28,14 @@ class Mastermind
 
   def guess_hidden_code
     print "\nPlease make your guess: "
-    @guess = gets.chomp.split(' ')
+    @guess = gets.chomp.downcase.split(' ')
     invalid_selection?(@guess) ? guess_hidden_code : next_turn
   end
 
   def play_mastermind
     display_game_information
     guess_hidden_code
+    guess_feedback
   end
 
   private
@@ -65,11 +66,11 @@ class Mastermind
                 end
   end
 
-  def invalid_selection?(guess)
-    if guess.any? { |w| w.match?(/[^A-Za-z]/) } ||
-       guess.any? { |w| !@default_colors.join.include?(w) } ||
-       guess.uniq.count <= 3 ||
-       guess.length != 4
+  def invalid_selection?(entry)
+    if entry.any? { |w| w.match?(/[^A-Za-z]/) } ||
+       entry.any? { |w| !@default_colors.join.include?(w) } ||
+       entry.uniq.count <= 3 ||
+       entry.length != 4
       puts 'Entry must be four seperate colors follow by a space and consist of: '.yellow
       puts "white, \e[35mmagenta\e[0m, \e[31mred\e[0m, \e[34mblue\e[0m, \e[32mgreen\e[0m or \e[33myellow\e[0m!\n"
       true
@@ -95,12 +96,35 @@ class Mastermind
 
   def display_game_information
     puts "\n"
-    puts @default_colors.join(' | ')
-    puts @hidden_code.join(' | ')
+    puts ['white', 'magenta'.magenta, 'red'.red, 'blue'.blue, 'green'.green, 'yellow'.yellow].join(' | ')
     puts display_current_turn
   end
 
   def next_turn
     @current_turn += 1
+  end
+
+  def check_color_in_hidden_code
+    color_exists = 0
+    @guess.each { |color| color_exists += 1 if @hidden_code.join.match?(color) }
+    color_exists
+  end
+
+  def check_position_in_hidden_code
+    correct_position = 0
+    counter = 0
+    while counter < @hidden_code.length
+      correct_position += 1 if @guess[counter].include?(@hidden_code[counter])
+      counter += 1
+    end
+    correct_position
+  end
+
+  def guess_feedback
+    feedback = []
+    check_position_in_hidden_code.times { feedback.push('●') }
+    (check_color_in_hidden_code - check_position_in_hidden_code).times { feedback.push('○') }
+    print "Previous guess: #{@guess}   "
+    puts feedback.join(' ').chomp('')
   end
 end

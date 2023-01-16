@@ -15,7 +15,6 @@ class Mastermind
   def initialize
     @default_colors = ['white', 'magenta'.magenta, 'red'.red, 'blue'.blue, 'green'.green, 'yellow'.yellow]
     @hidden_code = []
-    @guess = []
     @current_turn = 0
   end
 
@@ -28,15 +27,14 @@ class Mastermind
   end
 
   def guess_hidden_code
-    print 'Please make your guess: '
-    @guess = gets.chomp
-    puts invalid_selection?(@guess) ? guess_hidden_code : next_turn
+    print "\nPlease make your guess: "
+    @guess = gets.chomp.split(' ')
+    invalid_selection?(@guess) ? guess_hidden_code : next_turn
   end
 
   def play_mastermind
     display_game_information
     guess_hidden_code
-    p examine_guess(@guess)
   end
 
   private
@@ -67,28 +65,28 @@ class Mastermind
                 end
   end
 
-  def computer_set_hidden_code
-    @hidden_code = @default_colors.dup
-    @hidden_code.delete_at(rand(@hidden_code.length)) while @hidden_code.length > 4
-  end
-
-  def player_set_hidden_code
-    print 'Please select which 4 colors will be the hidden code: '
-    player_code = gets.chomp
-    player_set_hidden_code if invalid_selection?(player_code)
-    player_code.split('').each { |x| @hidden_code.push(@default_colors[x.to_i - 1]) }
-  end
-
   def invalid_selection?(guess)
-    if guess.split('').any? { |input| !(1..6).cover?(input.to_i) }
-      puts "\nEntry must be numbers 1 through 6 only!\n\n"
-      true
-    elsif guess.length != 4
-      puts "\nEntry must be exactly four numbers!\n\n"
+    if guess.any? { |w| w.match?(/[^A-Za-z]/) } ||
+       guess.any? { |w| !@default_colors.join.include?(w) } ||
+       guess.uniq.count <= 3 ||
+       guess.length != 4
+      puts 'Entry must be four seperate colors follow by a space and consist of: '.yellow
+      puts "white, \e[35mmagenta\e[0m, \e[31mred\e[0m, \e[34mblue\e[0m, \e[32mgreen\e[0m or \e[33myellow\e[0m!\n"
       true
     else
       false
     end
+  end
+
+  def player_set_hidden_code
+    print "\nPlease select which 4 colors will be the hidden code: "
+    player_code = gets.chomp.split(' ')
+    invalid_selection?(player_code) ? player_set_hidden_code : @hidden_code = player_code
+  end
+
+  def computer_set_hidden_code
+    @hidden_code = @default_colors.dup
+    @hidden_code.delete_at(rand(@hidden_code.length)) while @hidden_code.length > 4
   end
 
   def display_current_turn

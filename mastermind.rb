@@ -3,19 +3,19 @@
 require 'colorize'
 require './player'
 require './instructions'
-require 'pry-byebug'
 
 # mastermind main class
 class Mastermind
   include Instructions
 
   attr_reader :default_colors, :hidden_code, :player, :computer,
-              :current_turn, :guess
+              :turn, :guess, :game_over
 
   def initialize
     @default_colors = %w[white magenta red blue green yellow]
     @hidden_code = []
-    @current_turn = 0
+    @turn = 0
+    @game_over = false
   end
 
   # Player interaction methods
@@ -36,6 +36,7 @@ class Mastermind
     display_game_information
     guess_hidden_code
     guess_feedback
+    game_won?
   end
 
   private
@@ -62,7 +63,7 @@ class Mastermind
     @computer = if @player.role == 'codebreaker'
                   Player.new('codemaker')
                 else
-                  Player.new('breaker')
+                  Player.new('codebreaker')
                 end
   end
 
@@ -90,18 +91,18 @@ class Mastermind
     @hidden_code.delete_at(rand(@hidden_code.length)) while @hidden_code.length > 4
   end
 
-  def display_current_turn
-    "Current Turn: #{@current_turn} of 12"
+  def display_turn
+    "Current Turn: #{@turn} of 12"
   end
 
   def display_game_information
     puts "\n"
     puts ['white', 'magenta'.magenta, 'red'.red, 'blue'.blue, 'green'.green, 'yellow'.yellow].join(' | ')
-    puts display_current_turn
+    puts display_turn
   end
 
   def next_turn
-    @current_turn += 1
+    @turn += 1
   end
 
   def check_color_in_hidden_code
@@ -124,7 +125,16 @@ class Mastermind
     feedback = []
     check_position_in_hidden_code.times { feedback.push('●') }
     (check_color_in_hidden_code - check_position_in_hidden_code).times { feedback.push('○') }
-    print "Previous guess: #{@guess}   "
     puts feedback.join(' ').chomp('')
+  end
+
+  def game_won?
+    if @guess == @hidden_code
+      @game_over = true
+      puts @player.role == 'codebreaker' ? 'Congrats you cracked the code!' : 'The computer cracked your code!'
+    elsif @turn >= 12
+      @game_over = true
+      puts @player.role == 'codebreaker' ? 'You didn\'t crack the code!' : 'The computer failed to crack your code!'
+    end
   end
 end

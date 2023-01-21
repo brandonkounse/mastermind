@@ -1,12 +1,10 @@
 # frozen_string_literal: true
 
-# class for the codebreaker and codemaker
+# class for the player object to play the game
 class Player
-  attr_reader :role
+  attr_accessor :role
 
-  def initialize(role)
-    @role = role
-  end
+  def initialize; end
 
   def guess
     gets.chomp.downcase.split(' ')

@@ -141,10 +141,10 @@ class Mastermind
   def game_won?
     if @guess == @hidden_code
       @over = true
-      puts @player.role == 'codebreaker' ? 'Congrats you cracked the code!' : 'The computer cracked your code!'
+      puts @player.role == :codebreaker ? 'Congrats you cracked the code!' : 'The computer cracked your code!'
     elsif @turn >= 12
       @over = true
-      puts @player.role == 'codebreaker' ? 'You didn\'t crack the code!' : 'The computer failed to crack your code!'
+      puts @player.role == :codebreaker ? 'You didn\'t crack the code!' : 'The computer failed to crack your code!'
     end
   end
 end

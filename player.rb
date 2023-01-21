@@ -7,4 +7,8 @@ class Player
   def initialize(role)
     @role = role
   end
+
+  def guess
+    gets.chomp.downcase.split(' ')
+  end
 end

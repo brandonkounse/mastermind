@@ -105,14 +105,10 @@ class Mastermind
     @hidden_code.delete_at(rand(@hidden_code.length)) while @hidden_code.length > 4
   end
 
-  def display_turn
-    "Current Turn: #{@turn} of 12"
-  end
-
   def display_game_information
     puts "\n"
     puts ['white', 'magenta'.magenta, 'red'.red, 'blue'.blue, 'green'.green, 'yellow'.yellow].join(' | ')
-    puts display_turn
+    puts "Current Turn: #{@turn} of 12"
   end
 
   def check_color_in_hidden_code

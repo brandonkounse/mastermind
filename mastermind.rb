@@ -21,22 +21,22 @@ class Mastermind
   end
 
   # Player interaction methods
-  def game_start_setup
+  def setup
     puts instructions
     pick_player_role
     set_computer_role
     @player.role == 'codemaker' ? player_set_hidden_code : computer_set_hidden_code
   end
 
-  def guess_hidden_code
+  def obtain_player_guess
     print "\nPlease make your guess: "
-    @guess = gets.chomp.downcase.split(' ')
-    invalid_selection?(@guess) ? guess_hidden_code : next_turn
+    @guess = @player.guess
+    invalid_selection?(@guess) ? obtain_player_guess : @turn += 1
   end
 
   def play
     display_game_information
-    guess_hidden_code
+    obtain_player_guess
     guess_feedback
     game_won?
   end
@@ -101,10 +101,6 @@ class Mastermind
     puts "\n"
     puts ['white', 'magenta'.magenta, 'red'.red, 'blue'.blue, 'green'.green, 'yellow'.yellow].join(' | ')
     puts display_turn
-  end
-
-  def next_turn
-    @turn += 1
   end
 
   def check_color_in_hidden_code

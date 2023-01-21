@@ -5,7 +5,7 @@ require './player'
 
 game = Mastermind.new
 
-game.game_start_setup
+game.setup
 
 while game.turn < Mastermind::MAX_TURNS
   game.play

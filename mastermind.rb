@@ -8,14 +8,16 @@ require './instructions'
 class Mastermind
   include Instructions
 
+  MAX_TURNS = 12
+
   attr_reader :default_colors, :hidden_code, :player, :computer,
-              :turn, :guess, :game_over
+              :turn, :guess, :over
 
   def initialize
     @default_colors = %w[white magenta red blue green yellow]
     @hidden_code = []
     @turn = 0
-    @game_over = false
+    @over = false
   end
 
   # Player interaction methods
@@ -32,7 +34,7 @@ class Mastermind
     invalid_selection?(@guess) ? guess_hidden_code : next_turn
   end
 
-  def play_mastermind
+  def play
     display_game_information
     guess_hidden_code
     guess_feedback
@@ -130,10 +132,10 @@ class Mastermind
 
   def game_won?
     if @guess == @hidden_code
-      @game_over = true
+      @over = true
       puts @player.role == 'codebreaker' ? 'Congrats you cracked the code!' : 'The computer cracked your code!'
     elsif @turn >= 12
-      @game_over = true
+      @over = true
       puts @player.role == 'codebreaker' ? 'You didn\'t crack the code!' : 'The computer failed to crack your code!'
     end
   end

@@ -21,11 +21,23 @@ class Mastermind
   end
 
   # Player interaction methods
+  def add_player(player)
+    if @player.nil?
+      puts 'Player already added, can\'t play with more than one player!'
+    else
+      @player = player
+    end
+  end
+
+  def add_opponent(computer)
+    @computer = computer
+  end
+
   def setup
     puts instructions
-    pick_player_role
+    obtain_player_role
     set_computer_role
-    @player.role == 'codemaker' ? player_set_hidden_code : computer_set_hidden_code
+    @player.role == :codemaker ? player_set_hidden_code : computer_set_hidden_code
   end
 
   def obtain_player_guess
@@ -43,7 +55,7 @@ class Mastermind
 
   private
 
-  def pick_player_role
+  def obtain_player_role
     print 'Do you want to be the codemaker (1) or codebreaker (2)?  '
     role = gets.chomp
     validate_player_role(role)
@@ -52,21 +64,21 @@ class Mastermind
   def validate_player_role(role)
     case role.to_i
     when 1
-      @player = Player.new('codemaker')
+      @player.role = :codemaker
     when 2
-      @player = Player.new('codebreaker')
+      @player.role = :codebreaker
     else
       print 'Please enter either 1 for codemaker or 2 for codebreaker: '
-      pick_player_role
+      obtain_player_role
     end
   end
 
   def set_computer_role
-    @computer = if @player.role == 'codebreaker'
-                  Player.new('codemaker')
-                else
-                  Player.new('codebreaker')
-                end
+    @computer.role == if @player.role == :codebreaker
+                        :codemaker
+                      else
+                        :codebreaker
+                      end
   end
 
   def invalid_selection?(entry)

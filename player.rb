@@ -9,4 +9,8 @@ class Player
   def guess
     gets.chomp.downcase.split(' ')
   end
+
+  def set_hidden_code
+    gets.chomp.downcase.split(' ')
+  end
 end

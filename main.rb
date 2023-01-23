@@ -2,13 +2,12 @@
 
 require './mastermind'
 require './player'
+require './computer'
 
 game = Mastermind.new
-player = Player.new
-computer = Computer.new
 
-game.add_player(player)
-game.add_opponent(computer)
+game.add_player(Player.new)
+game.add_opponent(Computer.new)
 game.setup
 
 while game.turn < Mastermind::MAX_TURNS

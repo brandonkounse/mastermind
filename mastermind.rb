@@ -37,7 +37,7 @@ class Mastermind
     puts instructions
     obtain_player_role
     set_computer_role
-    @player.role == :codemaker ? player_set_hidden_code : computer_set_hidden_code
+    set_hidden_code
   end
 
   def play
@@ -99,15 +99,15 @@ class Mastermind
                       end
   end
 
-  def player_set_hidden_code
-    print "\nPlease select which 4 colors will be the hidden code: "
-    player_code = gets.chomp.split(' ')
-    validate_player_input(player_code) ? player_set_hidden_code : @hidden_code = player_code
-  end
-
-  def computer_set_hidden_code
-    @hidden_code = @default_colors.dup
-    @hidden_code.delete_at(rand(@hidden_code.length)) while @hidden_code.length > 4
+  def set_hidden_code
+    if @player.role == :codemaker
+      print "\nPlease select which 4 colors will be the hidden code: "
+      code = @player.set_hidden_code
+      validate_player_input(code) ? set_hidden_code : @hidden_code = code
+    else
+      @hidden_code = @default_colors.dup
+      @hidden_code.delete_at(rand(@hidden_code.length)) while @hidden_code.length > 4
+    end
   end
 
   def display_game_information

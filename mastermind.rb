@@ -22,7 +22,7 @@ class Mastermind
 
   # Player interaction methods
   def add_player(player)
-    if @player.nil?
+    if !@player.nil?
       puts 'Player already added, can\'t play with more than one player!'
     else
       @player = player
@@ -40,12 +40,6 @@ class Mastermind
     @player.role == :codemaker ? player_set_hidden_code : computer_set_hidden_code
   end
 
-  def obtain_player_guess
-    print "\nPlease make your guess: "
-    @guess = @player.guess
-    invalid_selection?(@guess) ? obtain_player_guess : @turn += 1
-  end
-
   def play
     display_game_information
     obtain_player_guess
@@ -55,21 +49,45 @@ class Mastermind
 
   private
 
+  def obtain_player_guess
+    print "\nPlease make your guess: "
+    @guess = @player.guess
+    validate_player_input(@guess) ? obtain_player_guess : @turn += 1
+  end
+
+  def validate_player_input(input)
+    if input.any? { |w| w.match?(/[^A-Za-z]/) } ||
+       input.any? { |w| !@default_colors.join.include?(w) } ||
+       input.uniq.count <= 3 ||
+       input.length != 4
+      puts 'Entry must be four seperate colors follow by a space and consist of: '.yellow
+      puts "white, \e[35mmagenta\e[0m, \e[31mred\e[0m, \e[34mblue\e[0m, \e[32mgreen\e[0m or \e[33myellow\e[0m!\n"
+      true
+    else
+      false
+    end
+  end
+
   def obtain_player_role
     print 'Do you want to be the codemaker (1) or codebreaker (2)?  '
     role = gets.chomp
-    validate_player_role(role)
-  end
 
-  def validate_player_role(role)
     case role.to_i
     when 1
       @player.role = :codemaker
     when 2
       @player.role = :codebreaker
+    end
+
+    obtain_player_role until validate_player_role
+  end
+
+  def validate_player_role
+    if @player.role == :codemaker || @player.role == :codebreaker
+      true
     else
-      print 'Please enter either 1 for codemaker or 2 for codebreaker: '
-      obtain_player_role
+      puts 'Input for player role (codemaker or codebreaker) is not valid, please try again!'
+      false
     end
   end
 
@@ -81,23 +99,10 @@ class Mastermind
                       end
   end
 
-  def invalid_selection?(entry)
-    if entry.any? { |w| w.match?(/[^A-Za-z]/) } ||
-       entry.any? { |w| !@default_colors.join.include?(w) } ||
-       entry.uniq.count <= 3 ||
-       entry.length != 4
-      puts 'Entry must be four seperate colors follow by a space and consist of: '.yellow
-      puts "white, \e[35mmagenta\e[0m, \e[31mred\e[0m, \e[34mblue\e[0m, \e[32mgreen\e[0m or \e[33myellow\e[0m!\n"
-      true
-    else
-      false
-    end
-  end
-
   def player_set_hidden_code
     print "\nPlease select which 4 colors will be the hidden code: "
     player_code = gets.chomp.split(' ')
-    invalid_selection?(player_code) ? player_set_hidden_code : @hidden_code = player_code
+    validate_player_input(player_code) ? player_set_hidden_code : @hidden_code = player_code
   end
 
   def computer_set_hidden_code

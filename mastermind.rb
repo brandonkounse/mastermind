@@ -11,7 +11,7 @@ class Mastermind
   MAX_TURNS = 12
 
   attr_reader :default_colors, :hidden_code, :player, :computer,
-              :turn, :guess, :over
+              :turn, :guess, :over, :feedback
 
   def initialize
     @default_colors = %w[white magenta red blue green yellow]
@@ -42,11 +42,20 @@ class Mastermind
   end
 
   def play
-    display_game_information
+    display_stats
     @player.role == :codebreaker ? obtain_player_guess : obtain_computer_guess
     guess_feedback
-    game_won?
     @turn += 1
+  end
+
+  def won?
+    if @guess == @hidden_code
+      @over = true
+      puts @player.role == :codebreaker ? "\nCongrats you cracked the code!" : "\nThe computer cracked your code!"
+    elsif @turn > MAX_TURNS
+      @over = true
+      puts @player.role == :codebreaker ? "\nYou didn't crack the code!" : "\nThe computer failed to crack your code!"
+    end
   end
 
   private
@@ -55,7 +64,6 @@ class Mastermind
     print "\nPlease make your guess: "
     @guess = @player.guess
     obtain_player_guess if validate_player_input(@guess)
-    puts "Previous guess: #{@guess}" unless @guess.nil?
   end
 
   def obtain_computer_guess
@@ -63,7 +71,6 @@ class Mastermind
     @computer.guess.each do |guess|
       @guess.push(@default_colors[guess])
     end
-    puts "Computer guess: #{@guess}"
   end
 
   def validate_player_input(input)
@@ -121,10 +128,15 @@ class Mastermind
     end
   end
 
-  def display_game_information
-    puts "\n"
-    puts ['white', 'magenta'.magenta, 'red'.red, 'blue'.blue, 'green'.green, 'yellow'.yellow].join(' | ')
+  def display_stats
+    puts ["\nwhite", 'magenta'.magenta, 'red'.red, 'blue'.blue, 'green'.green, 'yellow'.yellow].join(' | ')
     puts "Current Turn: #{@turn} of 12"
+    if @player.role == :codebreaker
+      puts "Previous guess: #{@guess}" unless @guess.nil?
+    else
+      puts "Computer guess: #{@guess}" unless @guess.nil?
+    end
+    puts @feedback
   end
 
   def check_color_in_hidden_code
@@ -147,18 +159,6 @@ class Mastermind
     feedback = []
     check_position_in_hidden_code.times { feedback.push('●') }
     (check_color_in_hidden_code - check_position_in_hidden_code).times { feedback.push('○') }
-    puts feedback.join(' ').chomp('')
-  end
-
-  def game_won?
-    if @guess == @hidden_code
-      @over = true
-      puts @player.role == :codebreaker ? 'Congrats you cracked the code!' : 'The computer cracked your code!'
-    elsif @turn > MAX_TURNS
-      @over = true
-      puts @player.role == :codebreaker ? 'You didn\'t crack the code!' : 'The computer failed to crack your code!'
-    else
-      puts 'The code remains uncracked, maybe next time!'
-    end
+    @feedback = feedback.join(' ').chomp('')
   end
 end

@@ -16,7 +16,7 @@ class Mastermind
   def initialize
     @default_colors = %w[white magenta red blue green yellow]
     @hidden_code = []
-    @turn = 0
+    @turn = 1
     @over = false
   end
 
@@ -38,13 +38,15 @@ class Mastermind
     obtain_player_role
     set_computer_role
     set_hidden_code
+    system 'clear'
   end
 
   def play
     display_game_information
-    obtain_player_guess
+    @player.role == :codebreaker ? obtain_player_guess : obtain_computer_guess
     guess_feedback
     game_won?
+    @turn += 1
   end
 
   private
@@ -52,7 +54,16 @@ class Mastermind
   def obtain_player_guess
     print "\nPlease make your guess: "
     @guess = @player.guess
-    validate_player_input(@guess) ? obtain_player_guess : @turn += 1
+    obtain_player_guess if validate_player_input(@guess)
+    puts "Previous guess: #{@guess}" unless @guess.nil?
+  end
+
+  def obtain_computer_guess
+    @guess = []
+    @computer.guess.each do |guess|
+      @guess.push(@default_colors[guess])
+    end
+    puts "Computer guess: #{@guess}"
   end
 
   def validate_player_input(input)
@@ -143,7 +154,7 @@ class Mastermind
     if @guess == @hidden_code
       @over = true
       puts @player.role == :codebreaker ? 'Congrats you cracked the code!' : 'The computer cracked your code!'
-    elsif @turn >= 12
+    elsif @turn > MAX_TURNS
       @over = true
       puts @player.role == :codebreaker ? 'You didn\'t crack the code!' : 'The computer failed to crack your code!'
     end

@@ -157,6 +157,8 @@ class Mastermind
     elsif @turn > MAX_TURNS
       @over = true
       puts @player.role == :codebreaker ? 'You didn\'t crack the code!' : 'The computer failed to crack your code!'
+    else
+      puts 'The code remains uncracked, maybe next time!'
     end
   end
 end

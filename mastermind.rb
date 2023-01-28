@@ -36,7 +36,8 @@ class Mastermind
   def setup
     puts instructions
     obtain_player_role
-    set_computer_role
+    obtain_computer_role
+    obtain_computer_role
     set_hidden_code
     system 'clear'
   end
@@ -101,12 +102,8 @@ class Mastermind
     end
   end
 
-  def set_computer_role
-    @computer.role == if @player.role == :codebreaker
-                        :codemaker
-                      else
-                        :codebreaker
-                      end
+  def obtain_computer_role
+    @computer.set_role(@player)
   end
 
   def set_hidden_code

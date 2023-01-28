@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 require 'colorize'
-require './player'
 require './instructions'
 
 # mastermind main class
@@ -140,5 +139,6 @@ class Mastermind
     check_position_in_hidden_code.times { feedback.push('●') }
     (check_color_in_hidden_code - check_position_in_hidden_code).times { feedback.push('○') }
     @feedback = feedback.join(' ').chomp('')
+    @computer.feedback = @feedback if @computer.role == :codebreaker
   end
 end

@@ -88,15 +88,7 @@ class Mastermind
 
   def obtain_player_role
     print 'Do you want to be the codemaker (1) or codebreaker (2)?  '
-    role = gets.chomp
-
-    case role.to_i
-    when 1
-      @player.role = :codemaker
-    when 2
-      @player.role = :codebreaker
-    end
-
+    @player.set_role
     obtain_player_role until validate_player_role
   end
 
@@ -120,7 +112,7 @@ class Mastermind
   def set_hidden_code
     if @player.role == :codemaker
       print "\nPlease select which 4 colors will be the hidden code: "
-      code = @player.set_hidden_code
+      code = @player.guess
       validate_player_input(code) ? set_hidden_code : @hidden_code = code
     else
       @hidden_code = @default_colors.dup
@@ -131,11 +123,7 @@ class Mastermind
   def display_stats
     puts ["\nwhite", 'magenta'.magenta, 'red'.red, 'blue'.blue, 'green'.green, 'yellow'.yellow].join(' | ')
     puts "Current Turn: #{@turn} of 12"
-    if @player.role == :codebreaker
-      puts "Previous guess: #{@guess}" unless @guess.nil?
-    else
-      puts "Computer guess: #{@guess}" unless @guess.nil?
-    end
+    puts "Previous guess: #{@guess}" unless @guess.nil?
     puts @feedback
   end
 

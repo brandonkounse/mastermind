@@ -10,7 +10,14 @@ class Player
     gets.chomp.downcase.split(' ')
   end
 
-  def set_hidden_code
-    gets.chomp.downcase.split(' ')
+  def set_role
+    role = gets.chomp
+
+    case role.to_i
+    when 1
+      @role = :codemaker
+    when 2
+      @role = :codebreaker
+    end
   end
 end

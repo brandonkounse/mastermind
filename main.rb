@@ -12,5 +12,6 @@ game.setup
 
 while game.turn <= Mastermind::MAX_TURNS
   game.play
+  game.won?
   break if game.over == true
 end

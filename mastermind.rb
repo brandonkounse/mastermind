@@ -43,7 +43,7 @@ class Mastermind
 
   def play
     display_stats
-    @player.role == :codebreaker ? obtain_player_guess : obtain_computer_guess
+    @player.role == :codebreaker ? obtain_player_guess : obtain_computer_guess(@default_colors)
     guess_feedback
     @turn += 1
   end
@@ -66,11 +66,8 @@ class Mastermind
     obtain_player_guess if validate_player_input(@guess)
   end
 
-  def obtain_computer_guess
-    @guess = []
-    @computer.guess.each do |guess|
-      @guess.push(@default_colors[guess])
-    end
+  def obtain_computer_guess(colors)
+    @guess = @computer.guess(colors)
   end
 
   def validate_player_input(input)

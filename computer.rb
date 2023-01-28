@@ -14,4 +14,12 @@ class Computer < Player
     end
     random_colors
   end
+
+  def set_role(player)
+    @role = if player.role == :codebreaker
+              :codemaker
+            else
+              :codebreaker
+            end
+  end
 end

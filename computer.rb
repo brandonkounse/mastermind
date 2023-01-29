@@ -24,7 +24,7 @@ class Computer < Player
   end
 
   def refactor_guess(guess)
-    if @all_guesses.include?(guess)
+    if @all_guesses.include?(guess) # so the computer doesn't make the same guess again
       guess.shuffle!
     else
       guess

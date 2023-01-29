@@ -4,15 +4,31 @@ require './player'
 
 # class for the computer opponent to play against
 class Computer < Player
-  attr_accessor :role
+  attr_accessor :role, :feedback, :previous_guess, :all_guesses
 
-  def guess
-    random_colors = []
-    until random_colors.length == 4
-      random_guess = rand(6)
-      random_colors.push(random_guess) unless random_colors.include?(random_guess)
+  def initialize
+    @all_guesses = []
+    super
+  end
+
+  def guess(colors)
+    guess = colors.sample(4)
+
+    if evaluate_feedback == :hot
+      guess = @previous_guess.shuffle
+      refactor_guess(guess)
     end
-    random_colors
+    @previous_guess = guess
+    @all_guesses.push(guess)
+    guess
+  end
+
+  def refactor_guess(guess)
+    if @all_guesses.include?(guess)
+      guess.shuffle!
+    else
+      guess
+    end
   end
 
   def set_role(opponent)
@@ -21,5 +37,19 @@ class Computer < Player
             else
               :codebreaker
             end
+  end
+
+  def set_hidden_code(colors)
+    colors.sample(4)
+  end
+
+  private
+
+  def evaluate_feedback
+    if @feedback.nil?
+      :cold
+    elsif @feedback.gsub(' ', '').length == 4
+      :hot
+    end
   end
 end

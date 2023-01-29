@@ -50,6 +50,7 @@ class Mastermind
   def won?
     if @guess == @hidden_code
       @over = true
+      display_stats
       puts @player.role == :codebreaker ? "\nCongrats you cracked the code!" : "\nThe computer cracked your code!"
     elsif @turn > MAX_TURNS
       @over = true

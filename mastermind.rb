@@ -106,7 +106,7 @@ class Mastermind
     if @player.role == :codemaker
       print "\nPlease select which 4 colors will be the hidden code: "
       code = @player.guess
-      validate_player_input(code) ? get_hidden_code : @hidden_code = code
+      validate_player_input(code) ? get_hidden_code(colors) : @hidden_code = code
     else
       @hidden_code = @computer.set_hidden_code(colors)
     end
@@ -119,13 +119,13 @@ class Mastermind
     puts @feedback
   end
 
-  def check_color_in_hidden_code
+  def check_color
     color_exists = 0
     @guess.each { |color| color_exists += 1 if @hidden_code.join.match?(color) }
     color_exists
   end
 
-  def check_position_in_hidden_code
+  def check_position
     correct_position = 0
     counter = 0
     while counter < @hidden_code.length
@@ -137,8 +137,8 @@ class Mastermind
 
   def guess_feedback
     feedback = []
-    check_position_in_hidden_code.times { feedback.push('●') }
-    (check_color_in_hidden_code - check_position_in_hidden_code).times { feedback.push('○') }
+    check_position.times { feedback.push('●') }
+    (check_color - check_position).times { feedback.push('○') }
     @feedback = feedback.join(' ').chomp('')
     @computer.feedback = @feedback if @computer.role == :codebreaker
   end
